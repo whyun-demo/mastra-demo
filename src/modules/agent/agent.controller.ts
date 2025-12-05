@@ -6,6 +6,8 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { Readable } from 'stream'
 import { WeatherResponseDTO } from './dto/weather.dto'
 import { Slogger } from 'node-slogger'
+import { WeatherCtx } from './interfaces/weather-ctx.interface'
+import { RequestContext } from '@mastra/core/di'
 const logger = new Slogger()
 @Controller('agent')
 @ApiTags('智能体相关')
@@ -156,6 +158,9 @@ export class AgentController {
     const workflow = mastra.getWorkflow('weatherWorkflow')
     const run = await workflow.createRun({})
     const conversationId = query.conversation_id || randomUUID()
+    const requestContext = new RequestContext<WeatherCtx>()
+    requestContext.set('streamHelper', streamHelper)
+    requestContext.set('conversationId', conversationId)
     streamHelper.pushData({
       event: 'event',
       data: {
@@ -170,10 +175,7 @@ export class AgentController {
         inputData: {
           city: query.city,
         },
-        initialState: {
-          streamHelper,
-          conversationId,
-        },
+        requestContext,
       })
       .then((_result) => {
         if (_result.status === 'failed') {

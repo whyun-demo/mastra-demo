@@ -82,14 +82,12 @@ const fetchWeather = createStep({
   inputSchema: z.object({
     city: z.string().describe('The city to get the weather for'),
   }),
-  stateSchema: z.object({
-    streamHelper: z.instanceof(AIStreamHelper),
-    conversationId: z.string(),
-  }),
   outputSchema: forecastSchema,
-  execute: async ({ inputData, state }) => {
-    const streamHelper = state.streamHelper
-    const conversationId = state.conversationId
+  execute: async ({ inputData, requestContext }) => {
+    const streamHelper = requestContext.get('streamHelper') as
+      | AIStreamHelper
+      | undefined
+    const conversationId = requestContext.get('conversationId') as string
     const deltaId = randomUUID()
     streamHelper?.pushData({
       event: 'event',
@@ -165,14 +163,12 @@ const planActivities = createStep({
   outputSchema: z.object({
     activities: z.string(),
   }),
-  stateSchema: z.object({
-    streamHelper: z.instanceof(AIStreamHelper),
-    conversationId: z.string(),
-  }),
-  execute: async ({ inputData, state }) => {
+  execute: async ({ inputData, requestContext }) => {
     const forecast = inputData
-    const streamHelper = state.streamHelper
-    const conversationId = state.conversationId
+    const streamHelper = requestContext.get('streamHelper') as
+      | AIStreamHelper
+      | undefined
+    const conversationId = requestContext.get('conversationId') as string
     const deltaId = randomUUID()
     streamHelper?.pushData({
       event: 'event',

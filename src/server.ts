@@ -1,4 +1,4 @@
-import { NestFactory, Reflector } from '@nestjs/core'
+import { NestFactory } from '@nestjs/core'
 
 import { setTimeout } from 'timers/promises'
 import { HttpExceptionFilter } from './filters/http-exception.filter'
@@ -31,22 +31,17 @@ process.on('unhandledRejection', async (err) => {
   process.exit(2)
 })
 
-
-
 async function bootstrap() {
   const app = await NestFactory.create(ServerModule)
   app.enableCors()
   app.useGlobalFilters(new HttpExceptionFilter())
 
   app.useGlobalPipes(validationPipe)
-  const reflector = app.get(Reflector)
   app.useGlobalInterceptors(new ResponseInterceptor())
   app.use(bodyParser.json({ limit: '100mb' }))
   app.use(bodyParser.urlencoded({ limit: '100mb', extended: true }))
   app.use(cookieParser())
-  if (
-    _env.NODE_ENV === 'development'
-  ) {
+  if (_env.NODE_ENV === 'development') {
     const options = new DocumentBuilder()
       .setTitle(name)
       .addSecurity('bearer', {

@@ -1,0 +1,10 @@
+*
+!dist
+!config
+!package.json
+!pnpm-lock.yaml
+!.npmrc
+!scripts/preinstall.js
+!tsconfig.json
+!tsconfig.build.json
+!nest-cli.json

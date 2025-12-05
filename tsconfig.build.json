@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": [
+    "node_modules",
+    "test",
+    "dist",
+    "**/*spec.ts",
+    "scripts",
+    "config",
+    "jest.config.js",
+    "eslint.config.mjs",
+    "vitest.config.ts",
+    "coverage"
+  ],
+  "compilerOptions": {
+    "outDir": "./dist"
+  }
+}
